@@ -1,0 +1,50 @@
+---
+title: "ANA515 Assignment 2_week 5"
+author: "Fang Tham"
+date: '2022-09-23'
+output: word_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(bslib)
+library(tidyverse)
+```
+
+```{r data, include=FALSE}
+#Section 2: Reading into the data, the read_csv from readr package that is loaded through tidyverse is used.
+url <- 'https://raw.githubusercontent.com/fivethirtyeight/data/master/flying-etiquette-survey/flying-etiquette.csv'
+etiquette <- read.csv(url(url))
+```
+
+```{r clean, include=FALSE}
+#clean data by renaming the columns
+colnames(etiquette)[colnames (etiquette) == 'How.tall.are.you.'] <- 'Height'
+colnames(etiquette)[colnames (etiquette) == 'Is.itrude.to.recline.your.seat.on.a.plane.'] <- 'Recline_Rude'
+colnames(etiquette)[colnames (etiquette) == 'Do.you.ever.recline.your.seat.when.you.fly.'] <- 'Recline_Freq'
+```
+
+
+```{r char, echo=FALSE}
+#I am selecting 4 columns that I am interested in by creating a new dataframe from my subset. I kept the respondentID in as as an ID tag:
+newetq <- subset(etiquette, select=c(1,3,4,13,23,24))
+
+#I am changing the class of all columns from characters to factors
+newetq2 <- as.data.frame(unclass(newetq),
+                         stringsAsFactors = TRUE)
+```
+
+This is a graph that shows the frequency of airplane passengers that recline their seats
+```{r graph1, echo=TRUE}
+ggplot(data = newetq2) + 
+  geom_bar(mapping = aes(x = Recline_Freq))
+```
+
+This is a graph that shows the relationship between age and whether they think reclining seas on an airplena is rude
+```{r graph2, echo=TRUE}
+ggplot(newetq2,
+       aes(x = Recline_Rude,
+       fill = Age)) +
+  geom_bar(position = "stack")
+```
